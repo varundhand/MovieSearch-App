@@ -3,7 +3,9 @@ const API_KEY = "4f7285dc";
 /**
  * @description - Fetches 10 movie title, description and image
  */
-async function fetchMovies() {
+async function fetchMovies(pageNumber) {
+  console.log(pageNumber);
+
   // Clean old results
   cleanup();
 
@@ -12,12 +14,14 @@ async function fetchMovies() {
   console.log(`The movie searched is ${searchTerm}`);
 
   const movieData = await fetch(
-    `https://omdbapi.com/?apikey=${API_KEY}&s=${searchTerm}&page=${1}`
+    `https://omdbapi.com/?apikey=${API_KEY}&s=${searchTerm}&page=${
+      pageNumber || 1
+    }`
   );
   const data = await movieData.json();
   console.log(data);
   const pages = parseInt(data.totalResults / 10) + 1;
-  console.log(pages);
+  // console.log(pages);
 
   showPaginator(pages);
 
@@ -72,7 +76,12 @@ async function fetchMovies() {
       type.classList.add("card-text");
 
       const image = document.createElement("img");
-      image.src = movie.Poster;
+      console.log(image.getAttribute("src"));
+      if (movie.Poster === "N/A") {
+        image.setAttribute("src", "images/default-image.png");
+      } else {
+        image.src = movie.Poster;
+      }
       image.classList.add("card-img-top");
 
       wrapperCard.append(image, wrapperBody);
@@ -91,13 +100,45 @@ async function fetchMovies() {
 const cleanup = () => {
   const errorSec = document.querySelector(".error");
   const cardSec = document.querySelector(".results");
+  const pagSec = document.querySelector(".paginator");
+
   errorSec.querySelectorAll("*").forEach((n) => n.remove()); // removing every node of the node list given by querySecelectorAll
   cardSec.querySelectorAll("*").forEach((n) => n.remove());
+  if (pagSec) {
+    pagSec.querySelectorAll("*").forEach((n) => n.remove());
+  }
+};
+
+const cleanup2 = () => {
+  // const errorSec = document.querySelector(".error");
+  // const cardSec = document.querySelector(".results");
+  // const pagSec = document.querySelector(".paginator");
+
+  const arrayOfSections = [".error", ".results", ".paginator"].map(
+    // we made an array of classes and maped them to query select each of them
+    (className) => document.querySelector(className)
+  );
+
+  // const arrayOfSections = [errorSec, cardSec, pagSec];
+  // const arrayOfSections = document.querySelector(
+  //   ".paginator, .error, .results"
+  // );
+
+  arrayOfSections.forEach((sec) => {
+    sec.querySelectorAll("*").forEach((n) => n.remove());
+  });
+
+  // errorSec.querySelectorAll("*").forEach((n) => n.remove()); // removing every node of the node list given by querySecelectorAll
+  // cardSec.querySelectorAll("*").forEach((n) => n.remove());
+  // if (pagSec) {
+  //   pagSec.querySelectorAll("*").forEach((n) => n.remove());
+  // }
 };
 
 // showpaginator function
 const showPaginator = (pages) => {
   const wrapperNav = document.createElement("nav");
+  wrapperNav.classList.add("pagination-section");
 
   const wrapperUl = document.createElement("ul");
   wrapperUl.classList.add("pagination");
@@ -107,15 +148,17 @@ const showPaginator = (pages) => {
     pageElement.classList.add("page-item", "page-link", "pe-auto");
     pageElement.style.cursor = "pointer";
     pageElement.textContent = page + 1;
+
+    //binding page elements to js fucntion
+    pageElement.onclick = function () {
+      const pageNumber = page + 1;
+      fetchMovies(pageNumber);
+    };
     wrapperUl.append(pageElement);
-    console.log(wrapperUl);
   }
 
   wrapperNav.append(wrapperUl);
   const paginator = document.querySelector(".paginator");
-  console.log(wrapperUl);
   paginator.append(wrapperNav);
 };
 // * Render Cards using the data from API.
-
-// Trying to fix git.
