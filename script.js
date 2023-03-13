@@ -84,8 +84,19 @@ async function fetchMovies(pageNumber) {
       }
       image.classList.add("card-img-top");
 
+      const movieLike = document.createElement("div");
+      movieLike.classList.add("movieLike");
+      const heart = document.createElement("img");
+      heart.style.width = "20px";
+      movieLike.style.display = "flex";
+      movieLike.style.justifyContent = "center";
+      movieLike.style.cursor = "pointer";
+      heart.setAttribute("src", "images/heart.svg");
+      // movieLike.onclick(function(movie){})
+      movieLike.append(heart);
+
       wrapperCard.append(image, wrapperBody);
-      wrapperBody.append(title, type, year);
+      wrapperBody.append(title, type, year, movieLike);
 
       // Render it in the body
       const resultSection = document.querySelector(".results");
