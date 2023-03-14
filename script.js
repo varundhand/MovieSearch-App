@@ -100,22 +100,45 @@ async function fetchMovies(pageNumber) {
         const KEY = "favourite-movies";
 
         // 1. check to see if the movie has an attribute of 'selected'
+        console.log(SVGElement.getAttribute("selected"));
+        if (SVGElement.getAttribute("selected") === null) {
+          // 2. If not selected
+          // movie clicked was not a favourite
+          //! remove the
 
-        // 2. If not selected
-        // movie clicked was not a favourite
-        const favouriteMovies = JSON.parse(localStorage.getItem(KEY));
-        favouriteMovies.push(movie);
-        localStorage.setItem(KEY, JSON.stringify(favouriteMovies));
+          // parse -> String => Object conversion
+          // stringify -> Object => String conversion
 
-        // If movie clicked was already a favourite
+          // localStorage.getItem (retrieve item from LS)
+          // localStorage.set (set item from LS)
 
-        // 3. Retrevie favourite-movies from local storage
+          const stringifiedMovies = localStorage.getItem(KEY); // String
+          const moviesObject = JSON.parse(stringifiedMovies); // Array of Objects
 
-        // 4. Remove clicked element from Array (using filter)
+          const updatedArray = moviesObject.filter((favMovie) => {
+            return favMovie.Title !== movie.Title;
+          });
 
-        // 5. Update local storage to new array
+          console.log(updatedArray);
+          // If movie clicked was already a favourite
 
-        console.log(favouriteMovies, typeof favouriteMovies);
+          // 3. Retrevie favourite-movies from local storage
+
+          // 4. Remove clicked element from Array (using filter)
+
+          // 5. Update local storage to new array
+        }
+        // Adding a new fav movie
+        else {
+          const favouriteMoviesStringifed = localStorage.getItem(KEY); // String
+          const favouriteMoviesObject = JSON.parse(favouriteMoviesStringifed); // Object
+          const updatedMovies = favouriteMoviesObject || [];
+          updatedMovies.push(movie);
+          const updatedMoviesStringified = JSON.stringify(updatedMovies); // Convert back to string & save
+          localStorage.setItem(KEY, updatedMoviesStringified);
+        }
+
+        // console.log(favouriteMovies, typeof favouriteMovies);
 
         // localStorage.setItem("FavMovies", JSON.stringify([movie]));
         // const favMovies = JSON.parse(localStorage.getItem("FavMovies"));
