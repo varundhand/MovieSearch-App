@@ -22,3 +22,7 @@ body{
 .page-link{
   border-radius: 10px;
 }
+
+svg[selected]{
+  fill: red;
+}
